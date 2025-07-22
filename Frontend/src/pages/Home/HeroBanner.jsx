@@ -30,37 +30,23 @@ const HeroBanner = () => {
         const videoRes = await axios.get(
           `${BASE_URL}/movie/${randomMovie.id}/videos?api_key=${TMDB_API_KEY}&language=en-US`
         );
-        const videos = videoRes.data.results.filter(
-          (v) => v.site === "YouTube" && v.type.toLowerCase().includes("trailer")
+
+        const title = randomMovie.title?.toLowerCase() || "";
+
+        // STRONG filter: Official YouTube trailer with movie title
+        const officialMatch = videoRes.data.results.find(
+          (v) =>
+            v.site === "YouTube" &&
+            v.type === "Trailer" &&
+            v.official === true &&
+            v.name.toLowerCase().includes(title)
         );
 
-        const title = randomMovie.title?.toLowerCase() || randomMovie.original_title?.toLowerCase() || "";
+        const fallbackMatch = videoRes.data.results.find(
+          (v) => v.site === "YouTube" && v.type === "Trailer"
+        );
 
-        // ✅ Try exact match first
-        const exactMatch = videos.find((vid) => {
-          const name = vid.name.toLowerCase();
-          return name.includes(title);
-        });
-
-        if (exactMatch) {
-          setTrailerKey(exactMatch.key);
-        } else {
-          // ✅ Score fallback if no match
-          const scored = videos
-            .map((vid) => {
-              const name = vid.name.toLowerCase();
-              let score = 0;
-              if (name.includes("official")) score += 2;
-              if (name.includes("trailer")) score += 1;
-              if (name.includes(title)) score += 2;
-              if (name.includes(`${randomMovie.release_date?.slice(0, 4)}`)) score += 1;
-              return { ...vid, score };
-            })
-            .sort((a, b) => b.score - a.score);
-
-          setTrailerKey(scored[0]?.key || null);
-        }
-
+        setTrailerKey(officialMatch?.key || fallbackMatch?.key || null);
         setShowTrailer(true);
       } catch (err) {
         console.error("HeroBanner fetch failed:", err);
@@ -177,6 +163,7 @@ const HeroBanner = () => {
             setEmbedUrl(null);
             setShowTrailer(true);
           }}
+          title={movie?.title}
         />
       )}
     </div>

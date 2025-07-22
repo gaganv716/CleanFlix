@@ -1,7 +1,7 @@
 // src/components/VideoPlayerModal.jsx
 import React from "react";
 
-const VideoPlayerModal = ({ embedUrl, onClose }) => {
+const VideoPlayerModal = ({ embedUrl, onClose, familyMode }) => {
   if (!embedUrl) return null;
 
   return (
@@ -21,9 +21,9 @@ const VideoPlayerModal = ({ embedUrl, onClose }) => {
           ✕
         </button>
 
-        {/* Embedded Player */}
+        {/* Always render iframe */}
         <iframe
-          src={embedUrl}
+          src={`${embedUrl}${embedUrl.includes("?") ? "&" : "?"}autoplay=1${familyMode ? "&muted=true" : ""}`}
           title="Movie Player"
           className="w-full h-full rounded"
           allowFullScreen

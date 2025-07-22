@@ -27,8 +27,8 @@ const HomePage = () => {
   const location = useLocation();
   const [region, setRegion] = useState("IN");
   const [currentUser, setCurrentUser] = useState(null);
+  const [familyMode, setFamilyMode] = useState(false); // ✅ Family mode state lifted up
 
-  // ✅ Check if user was passed via location.state (after signup)
   useEffect(() => {
     const passedUser = location.state?.user;
     const stored = JSON.parse(localStorage.getItem("user"));
@@ -45,7 +45,6 @@ const HomePage = () => {
     }
   }, [location.state]);
 
-  // ✅ Set region based on user country or fallback via IP
   useEffect(() => {
     if (currentUser?.country && countryToRegion[currentUser.country]) {
       setRegion(countryToRegion[currentUser.country]);
@@ -60,8 +59,13 @@ const HomePage = () => {
   }, [currentUser]);
 
   return (
-    <div className="bg-black text-white min-h-screen">
-      <Navbar loggedIn={!!currentUser} user={currentUser} />
+    <div className={`${familyMode ? "bg-blue-900" : "bg-black"} text-white min-h-screen transition-colors duration-300`}>
+      <Navbar
+        loggedIn={!!currentUser}
+        user={currentUser}
+        familyMode={familyMode}
+        setFamilyMode={setFamilyMode}
+      />
       <HeroBanner />
 
       <MovieRow

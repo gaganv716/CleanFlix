@@ -47,7 +47,7 @@ const Landing = () => {
         <h1 className="text-5xl md:text-6xl font-extrabold mb-6 drop-shadow-lg">
           Unlimited movies, TV shows, and more.
         </h1>
-        <p className="text-xl mb-6 drop-shadow-sm">Enjoy great stories. We’ll handle the skips.</p>
+        <p className="text-xl mb-6 drop-shadow-sm">Ad-free. Just pure cinema.</p>
         <p className="text-lg mb-6 drop-shadow-sm">
           Ready to watch? Enter your email to create your account.
         </p>

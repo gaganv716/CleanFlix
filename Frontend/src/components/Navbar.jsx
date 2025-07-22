@@ -10,7 +10,7 @@ import axios from "axios";
 
 const TMDB_API_KEY = "362dc1a026944ec0f801be34ae6fff8d";
 
-const Navbar = () => {
+const Navbar = ({ loggedIn, user }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const dropdownRef = useRef(null);
@@ -27,7 +27,6 @@ const Navbar = () => {
   const [selectedSearchType, setSelectedSearchType] = useState(null);
   const [showPlayerUrl, setShowPlayerUrl] = useState(null);
 
-  // ✅ Rehydrate currentUser across reloads, redirects, and navigation
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("user"));
     if (stored?.user) setCurrentUser(stored.user);
@@ -102,6 +101,7 @@ const Navbar = () => {
         {currentUser ? (
           <div className="flex items-center space-x-6 text-white">
             <button title="Notifications">🔔</button>
+
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setDropdownOpen((prev) => !prev)}
@@ -139,7 +139,6 @@ const Navbar = () => {
         )}
       </nav>
 
-      {/* 🔍 Search Results */}
       {searchTerm && (
         <div className="absolute top-[70px] left-0 right-0 z-[98] bg-black/90 px-8 py-6">
           {searching ? (
@@ -177,7 +176,6 @@ const Navbar = () => {
         </div>
       )}
 
-      {/* 🔐 Auth Modals */}
       {showModal && (
         <SigninModal
           onClose={() => setShowModal(false)}
@@ -191,7 +189,6 @@ const Navbar = () => {
         />
       )}
 
-      {/* 🎬 Search Result Playback */}
       {selectedSearchId && (
         <MovieDetailsModal
           movieId={selectedSearchId}
@@ -205,11 +202,11 @@ const Navbar = () => {
         />
       )}
 
-      {/* 📺 Video Player */}
       {showPlayerUrl && (
         <VideoPlayerModal
           embedUrl={showPlayerUrl}
           onClose={() => setShowPlayerUrl(null)}
+          familyMode={familyMode} // pass familyMode to VideoPlayerModal
         />
       )}
     </>
